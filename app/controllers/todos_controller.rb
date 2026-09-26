@@ -1,7 +1,7 @@
 class TodosController < ApplicationController
   include TodoFilterable
 
-  before_action :set_todo, only: %i[edit update destroy]
+  before_action :set_todo, only: %i[edit update destroy complete]
   before_action :require_turbo_frame, only: :edit
 
   def index; end
@@ -28,6 +28,11 @@ class TodosController < ApplicationController
 
   def destroy
     @todo.destroy!
+    render_refreshed_todos
+  end
+
+  def complete
+    @todo.complete!
     render_refreshed_todos
   end
 

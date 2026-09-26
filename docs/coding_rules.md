@@ -2,7 +2,7 @@
 
 このアプリのコーディング規約と、それぞれをどう確認するかの一覧です。
 
-- **ツール**: CI（`bin/ci` と GitHub Actions）で自動的に検査します。違反があると CI が失敗します。
+- **ツール**: CI（`bin/ci` と GitHub Actions）で自動的に検査します。違反があると CI が失敗します。PR では、変更した行への指摘を reviewdog が PR のレビューコメントとして付けます。
 - **AI 指示**: ツールで検査できない規約です。書いてある `AGENTS.md` を、AI エージェントがコードを書くときとレビューするときに読みます。人がレビューするときも同じ規約で確認します。
 
 チェック方法の書き方は次のとおりです。`spec/docs/coding_rules_spec.rb` が、ここに書いたルールが設定で有効になっていること、AI 指示の ID が `AGENTS.md` にあることを検査します。
@@ -166,7 +166,7 @@
 | SPEC-01 | `let!` は使わず、`let` と `before` を使う | RuboCop: Custom/NoLetBang |
 | SPEC-02 | Job は `allow` と `have_received` でモックせず、`have_enqueued_job` で検証する | RuboCop: Custom/ActiveJobMockInSpec |
 | SPEC-03 | example の長さとネストの深さを抑える | RuboCop: RSpec/ExampleLength, RuboCop: RSpec/NestedGroups |
-| SPEC-04 | コードは行も条件分岐もすべて spec で実行する | その他: SimpleCov（行 100%、条件分岐 95%） |
+| SPEC-04 | コードは行も条件分岐もすべて spec で実行する | その他: SimpleCov（行 100%、条件分岐 95%）, その他: undercover（PR で変更したメソッドやブロックのうち、実行されていない行に PR でコメント） |
 | SPEC-05 | 期待値は明示的な値で書く（`eq order.price` ではなく `eq 1000`） | AI: spec/AGENTS.md |
 | SPEC-06 | describe は「〜について」、context は「〜の場合」とし、it には具体的な結果を書く | AI: spec/AGENTS.md |
 | SPEC-07 | DB が必要なら `create`、不要なら `build` か `build_stubbed` を使う。一意な値は sequence、パターンは trait にする | AI: spec/AGENTS.md |

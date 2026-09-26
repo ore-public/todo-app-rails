@@ -91,4 +91,7 @@ group :test do
   gem 'capybara'
   gem 'capybara-playwright-driver'
   gem 'simplecov', require: false
+  # Find changed lines that are not covered by specs [https://github.com/grodowski/undercover]
+  gem 'undercover', require: false
+  gem 'undercover-checkstyle', require: false
 end

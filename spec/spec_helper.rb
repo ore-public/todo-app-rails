@@ -1,11 +1,12 @@
 if ENV.fetch('COVERAGE', 'false') == 'true'
   require 'simplecov'
+  require 'undercover/simplecov_formatter'
 
+  # coverage/coverage.json は、undercover と PR へのカバレッジのコメントで使う
+  SimpleCov.formatters = [SimpleCov::Formatter::HTMLFormatter, SimpleCov::Formatter::Undercover]
   SimpleCov.start 'rails' do
     enable_coverage :branch
     skip %w[/spec/ /config/ /db/]
-    # 独自 cop と haml-lint の linter も spec の対象に含める
-    group 'Lint rules', 'lib/'
     minimum_coverage line: 100, branch: 95
   end
 end

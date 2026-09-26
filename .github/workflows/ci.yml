@@ -5,9 +5,20 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: read
+
+env:
+  # PR へのコメントは、このリポジトリのブランチから作った PR だけで行う。
+  # フォークと Dependabot の PR ではトークンが読み取り専用になり、コメントを投稿できないため
+  PR_COMMENT: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' }}
+
 jobs:
   lint:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     env:
       RUBOCOP_CACHE_ROOT: tmp/rubocop
     steps:
@@ -35,23 +46,50 @@ jobs:
           restore-keys: |
             rubocop-${{ runner.os }}-${{ env.DEPENDENCIES_HASH }}-
 
+      - name: Set up reviewdog
+        if: env.PR_COMMENT == 'true'
+        uses: reviewdog/action-setup@v1
+
+      # PR で変更した行への指摘を、PR のレビューコメントとして付ける。検査の成否は後のステップで判定する
+      - name: Comment lint results on the pull request
+        if: env.PR_COMMENT == 'true'
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 検査で違反があっても、すべてのツールの結果をコメントする
+          set +o pipefail
+          bin/rubocop | reviewdog -f=rubocop -name=RuboCop -reporter=github-pr-review -fail-level=none
+          bundle exec haml-lint | reviewdog -f=haml-lint -name=haml-lint -reporter=github-pr-review -fail-level=none
+          bunx eslint | reviewdog -f=eslint -name=ESLint -reporter=github-pr-review -fail-level=none
+          # stylelint は CI では色付きで出力し reviewdog が読み取れないため、色なしの unix 形式で出力する
+          bunx stylelint --formatter unix --no-color "app/assets/stylesheets/**/*.scss" 2>&1 |
+            reviewdog -efm="%f:%l:%c: %m" -name=stylelint -reporter=github-pr-review -fail-level=none
+
       - name: Lint Ruby
+        if: ${{ !cancelled() }}
         run: bin/rubocop -f github
 
       - name: Lint Haml
+        if: ${{ !cancelled() }}
         run: bundle exec haml-lint
 
       - name: Lint JavaScript
+        if: ${{ !cancelled() }}
         run: bun run eslint
 
       - name: Lint stylesheets
+        if: ${{ !cancelled() }}
         run: bun run stylelint
 
       - name: Check locale files
+        if: ${{ !cancelled() }}
         run: bundle exec i18n-tasks health
 
   security:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -67,13 +105,29 @@ jobs:
       - name: Install node modules
         run: bun install --frozen-lockfile
 
+      - name: Set up reviewdog
+        if: env.PR_COMMENT == 'true'
+        uses: reviewdog/action-setup@v1
+
+      - name: Comment Brakeman results on the pull request
+        if: env.PR_COMMENT == 'true'
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +o pipefail
+          bin/brakeman --quiet --no-pager --format tabs --no-exit-on-warn --no-exit-on-error |
+            reviewdog -f=brakeman -name=Brakeman -reporter=github-pr-review -fail-level=none
+
       - name: Scan for common Rails security vulnerabilities using static analysis
+        if: ${{ !cancelled() }}
         run: bin/brakeman --no-pager --exit-on-warn --exit-on-error
 
       - name: Scan for known security vulnerabilities in gems used
+        if: ${{ !cancelled() }}
         run: bin/bundler-audit
 
       - name: Scan for known security vulnerabilities in node modules used
+        if: ${{ !cancelled() }}
         run: bun audit
 
   db:
@@ -93,13 +147,18 @@ jobs:
           git diff --exit-code db/schema.rb
 
       - name: Check consistency between models and the database schema
+        if: ${{ !cancelled() }}
         run: bundle exec database_consistency
 
       - name: Check autoloading
+        if: ${{ !cancelled() }}
         run: bin/rails zeitwerk:check
 
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     env:
       RAILS_ENV: test
     steps:
@@ -108,6 +167,9 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v7
+        with:
+          # undercover が PR の変更元のブランチとの差分を調べるため
+          fetch-depth: 0
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -132,6 +194,34 @@ jobs:
         run: |
           bin/rails db:test:prepare
           COVERAGE=true bin/rspec
+
+      - name: Write coverage summary
+        if: ${{ !cancelled() && hashFiles('coverage/coverage.json') != '' }}
+        run: |
+          ruby script/ci/coverage_summary.rb > tmp/coverage_summary.md
+          cat tmp/coverage_summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment coverage summary on the pull request
+        if: ${{ !cancelled() && env.PR_COMMENT == 'true' && hashFiles('tmp/coverage_summary.md') != '' }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: coverage
+          path: tmp/coverage_summary.md
+
+      - name: Set up reviewdog
+        if: ${{ !cancelled() && env.PR_COMMENT == 'true' }}
+        uses: reviewdog/action-setup@v1
+
+      # PR で変更したメソッドやブロックのうち、spec で実行されていない行にコメントを付ける
+      - name: Comment uncovered changes on the pull request
+        if: ${{ !cancelled() && env.PR_COMMENT == 'true' && hashFiles('coverage/coverage.json') != '' }}
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +o pipefail
+          bundle exec undercover --compare "origin/${{ github.base_ref }}" --format json |
+            ruby script/ci/undercover_rdjson.rb |
+            reviewdog -f=rdjson -name=undercover -reporter=github-pr-review -filter-mode=diff_context -fail-level=none
 
       - name: Keep screenshots from failed system specs
         uses: actions/upload-artifact@v7

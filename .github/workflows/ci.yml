@@ -203,7 +203,7 @@ jobs:
 
       - name: Comment coverage summary on the pull request
         if: ${{ !cancelled() && env.PR_COMMENT == 'true' && hashFiles('tmp/coverage_summary.md') != '' }}
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           header: coverage
           path: tmp/coverage_summary.md

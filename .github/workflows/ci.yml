@@ -61,7 +61,9 @@ jobs:
           bin/rubocop | reviewdog -f=rubocop -name=RuboCop -reporter=github-pr-review -fail-level=none
           bundle exec haml-lint | reviewdog -f=haml-lint -name=haml-lint -reporter=github-pr-review -fail-level=none
           bunx eslint | reviewdog -f=eslint -name=ESLint -reporter=github-pr-review -fail-level=none
-          bun run --silent stylelint 2>&1 | reviewdog -f=stylelint -name=stylelint -reporter=github-pr-review -fail-level=none
+          # stylelint は CI では色付きで出力し reviewdog が読み取れないため、色なしの unix 形式で出力する
+          bunx stylelint --formatter unix --no-color "app/assets/stylesheets/**/*.scss" 2>&1 |
+            reviewdog -efm="%f:%l:%c: %m" -name=stylelint -reporter=github-pr-review -fail-level=none
 
       - name: Lint Ruby
         if: ${{ !cancelled() }}

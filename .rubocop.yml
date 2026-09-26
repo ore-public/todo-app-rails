@@ -20,11 +20,13 @@ AllCops:
     - 'tmp/**/*'
     - 'vendor/**/*'
 
-# 独自 cop と haml-lint の linter は Rails の外で動くので、ActiveSupport を前提とする Rails の cop は適用しない
+# 独自 cop、haml-lint の linter、CI のレポートは Rails の外で動くので、ActiveSupport を前提とする Rails の cop は適用しない
 Rails:
   Exclude:
     - 'lib/rubocop/**/*'
     - 'lib/haml_lint/**/*'
+    - 'lib/ci_report/**/*'
+    - 'script/ci/**/*'
 
 # 1 行の文字数
 Layout/LineLength:

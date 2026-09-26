@@ -31,6 +31,12 @@ bin/ci
 
 GitHub Actions と同じ検査（RuboCop、haml-lint、ESLint、stylelint、i18n-tasks、brakeman、bundler-audit、bun audit、database_consistency、RSpec とカバレッジ）をまとめて実行します。
 
+PR では、GitHub Actions が次のコメントを付けます。このリポジトリのブランチから作った PR が対象で、フォークと Dependabot の PR には付けません。
+
+- 検査ツール（RuboCop、haml-lint、ESLint、stylelint、Brakeman）の指摘: 変更した行へのレビューコメント（reviewdog）
+- spec で実行されていない変更: 変更したメソッドやブロックのうち、実行されていない行へのレビューコメント（undercover と reviewdog）
+- カバレッジの要約: 全体とディレクトリごとの割合と、実行されていない箇所の一覧。push のたびに同じコメントを更新します
+
 ## コーディング規約
 
 - [docs/coding_rules.md](docs/coding_rules.md): 規約の一覧と、それぞれをどのツールで検査しているか

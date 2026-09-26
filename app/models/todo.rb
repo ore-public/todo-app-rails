@@ -22,10 +22,6 @@ class Todo < ApplicationRecord
   # 実施日の昇順で、実施日のないものは最後。同じ実施日の中は作成順
   scope :in_schedule_order, -> { order(arel_table[:scheduled_on].asc.nulls_last, :id) }
 
-  def shouted_title
-    title.upcase + "!"
-  end
-
   def completed?
     completion.present?
   end

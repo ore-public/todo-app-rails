@@ -1,0 +1,20 @@
+# 一意性は DB のユニークインデックスで保証する。
+# 以下はアプリの処理で重複しないようにしているので、利用者に向けたエラー表示のためのバリデーションは付けない。
+Tag:
+  index_tags_on_user_id_and_name:
+    UniqueIndexChecker:
+      enabled: false
+Tagging:
+  index_taggings_on_todo_id_and_tag_id:
+    UniqueIndexChecker:
+      enabled: false
+Todo::Completion:
+  index_todo_completions_on_todo_id:
+    UniqueIndexChecker:
+      enabled: false
+
+# has_secure_password が password のバリデーションで nil を防いでいる
+User:
+  password_digest:
+    NullConstraintChecker:
+      enabled: false

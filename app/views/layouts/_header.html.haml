@@ -1,0 +1,8 @@
+-# locals: (user:)
+%header.ly_header
+  = link_to root_path, class: 'ly_header_logo' do
+    = t('.logo')
+  %span.ly_header_email
+    = user.email_address
+  = button_to t('.sign_out'), session_path, method: :delete, class: 'btn btn-sm btn-outline-secondary'
+  = render 'layouts/help'

@@ -1,0 +1,9 @@
+- content_for :title, t('.title')
+.ly_narrow
+  %h1.el_pageTitle
+    = t('.title')
+  = form_with url: passwords_path, class: 'bl_authForm' do |form|
+    .bl_authForm_field
+      = form.label :email_address, t('.email_address'), class: 'form-label'
+      = form.email_field :email_address, required: true, autofocus: true, autocomplete: 'username', value: params[:email_address], class: 'form-control'
+    = form.submit t('.submit'), class: 'btn btn-primary'

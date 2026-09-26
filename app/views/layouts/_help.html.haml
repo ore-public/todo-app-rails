@@ -1,0 +1,22 @@
+-# locals: ()
+.bl_help{ data: { controller: 'dialog' } }
+  -# ? は Shift を押して入力する配列と押さずに入力する配列があるので、どちらでも開けるようにする
+  %button.btn.btn-sm.btn-outline-secondary{ type: 'button', aria: { label: t('.open') },
+                                            data: { controller: 'hotkey', action: 'dialog#open keydown.question@window->hotkey#click keydown.shift+question@window->hotkey#click' } }
+    ?
+  %dialog.bl_modal{ aria: { labelledby: 'help-title' }, data: { dialog_target: 'dialog' } }
+    %h2.bl_modal_title#help-title
+      = t('.title')
+    %dl.bl_help_shortcuts
+      - t('.shortcuts').each do |shortcut|
+        .bl_help_shortcut
+          %dt
+            %kbd
+              = shortcut[:keys]
+          %dd
+            = shortcut[:description]
+    %p.bl_help_hint
+      = t('.quick_entry_hint_html')
+    .bl_modal_actions
+      %button.btn.btn-secondary{ type: 'button', data: { action: 'dialog#close' } }
+        = t('.close')

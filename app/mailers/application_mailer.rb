@@ -1,0 +1,4 @@
+class ApplicationMailer < ActionMailer::Base
+  default from: -> { Rails.application.config.x.mailer_from }
+  layout 'mailer'
+end

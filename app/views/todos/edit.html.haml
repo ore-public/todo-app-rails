@@ -1,0 +1,2 @@
+= turbo_frame_tag 'modal' do
+  = render 'todos/form', todo: @todo, filter: todo_filter, autofocus: params[:focus] == 'tag_list' ? :tag_list : :title, today: Date.current

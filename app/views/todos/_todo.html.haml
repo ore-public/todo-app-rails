@@ -1,0 +1,20 @@
+-# locals: (todo:, filter:, today:)
+%li.bl_todoItem{ id: dom_id(todo), data: { completed: todo.completed?, cursor_target: 'item', action: 'click->cursor#select' } }
+  = form_with url: todo_completion_path(todo, filter.to_params), method: todo.completed? ? :delete : :post, class: 'bl_todoItem_toggle', data: { controller: 'auto-submit' } do
+    = check_box_tag :completed, '1', todo.completed?, id: nil, class: 'form-check-input',
+                                                      aria: { label: t('.toggle', title: todo.title) },
+                                                      data: { action: 'auto-submit#submit', cursor_target: 'toggle' }
+  = link_to todo.title, edit_todo_path(todo, filter.to_params), class: 'bl_todoItem_title', data: { turbo_frame: 'modal', cursor_target: 'edit' }
+  %span.bl_todoItem_meta
+    - todo.tag_names.each do |name|
+      %span.el_tag
+        = "##{name}"
+    - if todo.due_on
+      = due_badge(todo, today:)
+  -# キーボード操作から使う。画面には表示しない
+  = link_to t('.edit_tags'), edit_todo_path(todo, filter.to_params.merge(focus: 'tag_list')), hidden: true, data: { turbo_frame: 'modal', cursor_target: 'editTags' }
+  = form_with url: todo_schedule_path(todo, filter.to_params), method: :patch, html: { hidden: true } do |form|
+    = form.button t('.reschedule_later'), name: 'days', value: 1, hidden: true, data: { cursor_target: 'rescheduleLater' }
+    = form.button t('.reschedule_earlier'), name: 'days', value: -1, hidden: true, data: { cursor_target: 'rescheduleEarlier' }
+  = button_to t('.delete'), todo_path(todo, filter.to_params), method: :delete, hidden: true,
+                                                               form: { data: { turbo_confirm: t('.confirm_delete', title: todo.title) } }, data: { cursor_target: 'delete' }

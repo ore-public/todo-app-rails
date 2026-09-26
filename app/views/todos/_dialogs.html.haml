@@ -1,0 +1,12 @@
+-# locals: ()
+.bl_todoDialog{ data: { controller: 'dialog', action: 'turbo:frame-load->dialog#open' } }
+  %dialog.bl_modal{ aria: { label: t('.edit') }, data: { dialog_target: 'dialog', action: 'close->dialog#clear' } }
+    = turbo_frame_tag 'modal', data: { dialog_target: 'frame', action: 'turbo:submit-end->dialog#closeOnSuccess' }
+.bl_confirm{ data: { controller: 'confirm' } }
+  %dialog.bl_modal{ aria: { labelledby: 'confirm-message' }, data: { confirm_target: 'dialog', action: 'close->confirm#settle' } }
+    %p#confirm-message{ data: { confirm_target: 'message' } }
+    %form.bl_modal_actions{ method: 'dialog' }
+      %button.btn.btn-secondary{ value: 'cancel' }
+        = t('.cancel')
+      %button.btn.btn-danger{ value: 'accept', autofocus: true }
+        = t('.delete')

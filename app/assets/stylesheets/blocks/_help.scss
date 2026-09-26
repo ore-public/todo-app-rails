@@ -1,0 +1,20 @@
+.bl_help_shortcuts {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.bl_help_shortcut {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  gap: 0.5rem;
+
+  dd {
+    margin: 0;
+  }
+}
+
+.bl_help_hint {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--bs-secondary-color);
+}

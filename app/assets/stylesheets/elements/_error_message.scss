@@ -1,0 +1,13 @@
+.el_errorMessage {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: var(--bs-danger-text-emphasis);
+}
+
+.el_errorMessages {
+  padding: 0.5rem 0.75rem 0.5rem 1.75rem;
+  margin: 0;
+  color: var(--bs-danger-text-emphasis);
+  background-color: var(--bs-danger-bg-subtle);
+  border-radius: var(--bs-border-radius);
+}

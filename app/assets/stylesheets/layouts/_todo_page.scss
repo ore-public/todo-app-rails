@@ -1,0 +1,14 @@
+@use "../lib" as *;
+
+.ly_todoPage_toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+
+  > * {
+    flex: 1 1 18rem;
+    min-width: 0;
+  }
+}

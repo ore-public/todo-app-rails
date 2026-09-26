@@ -1,0 +1,16 @@
+-# locals: (form:, field:, today:)
+- field_name = form.object.class.human_attribute_name(field)
+.bl_todoForm_field{ data: { controller: 'date-shift', date_shift_today_value: today.iso8601 } }
+  = form.label field, class: 'form-label'
+  = form.date_field field, class: 'form-control', data: { date_shift_target: 'input' }
+  .bl_dateButtons
+    %button.btn.btn-sm.btn-outline-secondary{ type: 'button', data: { action: 'date-shift#setToday' } }
+      = t('.today')
+    %button.btn.btn-sm.btn-outline-secondary{ type: 'button', data: { action: 'date-shift#setTomorrow' } }
+      = t('.tomorrow')
+    %button.btn.btn-sm.btn-outline-secondary{ type: 'button', aria: { label: t('.earlier_label', field: field_name) }, data: { action: 'date-shift#shift', date_shift_days_param: -1 } }
+      = t('.earlier')
+    %button.btn.btn-sm.btn-outline-secondary{ type: 'button', aria: { label: t('.later_label', field: field_name) }, data: { action: 'date-shift#shift', date_shift_days_param: 1 } }
+      = t('.later')
+    %button.btn.btn-sm.btn-outline-secondary{ type: 'button', data: { action: 'date-shift#clear' } }
+      = t('.clear')

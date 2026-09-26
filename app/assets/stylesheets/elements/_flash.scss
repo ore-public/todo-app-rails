@@ -1,0 +1,15 @@
+.el_flash {
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: var(--bs-border-radius);
+}
+
+.el_flash__notice {
+  color: var(--bs-success-text-emphasis);
+  background-color: var(--bs-success-bg-subtle);
+}
+
+.el_flash__alert {
+  color: var(--bs-danger-text-emphasis);
+  background-color: var(--bs-danger-bg-subtle);
+}

@@ -1,0 +1,163 @@
+---
+ja:
+  activemodel:
+    attributes:
+      quick_entry:
+        text: 入力
+        title: タイトル
+    errors:
+      models:
+        quick_entry:
+          invalid_date: "「%{value}」を日付として解釈できません"
+  activerecord:
+    attributes:
+      todo:
+        due_on: 期限
+        note: メモ
+        scheduled_on: 実施日
+        tag_list: タグ（空白区切り）
+        title: タイトル
+      user:
+        email_address: メールアドレス
+        password: パスワード
+        password_confirmation: パスワード（確認）
+    errors:
+      models:
+        todo:
+          attributes:
+            tag_list:
+              invalid_tag_name: に使えない名前があります（%{names}）。タグは 50 文字以内で、空白とカンマは使えません
+              too_many_tags: は %{count} 個までです
+    models:
+      tag: タグ
+      todo: todo
+      user: ユーザー
+  date:
+    formats:
+      month_day: "%-m/%-d(%a)"
+  layouts:
+    application:
+      title: Tag Todo
+    header:
+      logo: tag todo
+      sign_out: ログアウト
+    help:
+      close: 閉じる
+      open: キーボード操作のヘルプ
+      quick_entry_hint_html: '追加欄では <code>#タグ</code> <code>@実施日</code> <code>!期限</code>
+        を指定できます（例: <code>資料作成 #仕事 @tomorrow !+3d</code>）'
+      shortcuts:
+      - description: カーソルを下 / 上に移動
+        keys: j / k
+      - description: 先頭 / 末尾に移動
+        keys: g / G
+      - description: 実施日を 1 日後 / 1 日前にする（未設定なら今日にする）
+        keys: Ctrl + j / Ctrl + k
+      - description: 完了 / 未完了を切り替え
+        keys: x
+      - description: 編集
+        keys: Enter / e
+      - description: タグを編集
+        keys: t
+      - description: 削除
+        keys: d
+      - description: 新規追加の入力欄に移動
+        keys: o
+      - description: タグの絞り込みに移動
+        keys: "/"
+      - description: 完了済みの表示 / 非表示を切り替え
+        keys: c
+      - description: このヘルプを表示
+        keys: "?"
+      - description: ダイアログを閉じる / 入力欄から抜ける
+        keys: Esc
+      title: キーボード操作
+  passwords:
+    create:
+      success: 登録されているメールアドレスの場合は、パスワードを再設定する手順を送信しました
+    edit:
+      password: 新しいパスワード
+      password_confirmation: 新しいパスワード（確認）
+      submit: 保存
+      title: 新しいパスワードの設定
+    invalid_token: パスワードを再設定するリンクが無効か、有効期限が切れています
+    new:
+      email_address: メールアドレス
+      submit: 再設定の手順を送信
+      title: パスワードの再設定
+    update:
+      success: パスワードを変更しました
+  passwords_mailer:
+    reset:
+      body: |-
+        次の URL からパスワードを再設定できます。
+        %{link}
+
+        リンクの有効期限は%{expires_in}です。
+      body_html: "%{link}からパスワードを再設定できます。リンクの有効期限は%{expires_in}です。"
+      link: パスワードの再設定ページ
+      subject: パスワードの再設定
+  registrations:
+    new:
+      sign_in: ログインはこちら
+      submit: 登録
+      title: ユーザー登録
+  sessions:
+    create:
+      failure: メールアドレスかパスワードが違います
+    new:
+      email_address: メールアドレス
+      forgot_password: パスワードを忘れた場合
+      password: パスワード
+      sign_up: ユーザー登録
+      submit: ログイン
+      title: ログイン
+    rate_limited: しばらく待ってからもう一度お試しください
+  todo_group:
+    relative_days:
+      today: 今日
+      tomorrow: 明日
+      yesterday: 昨日
+    unscheduled: 実施日なし
+  todos:
+    date_field:
+      clear: なし
+      earlier: "-1 日"
+      earlier_label: "%{field}を 1 日前にする"
+      later: "+1 日"
+      later_label: "%{field}を 1 日後にする"
+      today: 今日
+      tomorrow: 明日
+    dialogs:
+      cancel: キャンセル
+      delete: 削除
+      edit: todo の編集
+    due_badge:
+      later: 期限 %{date}
+      overdue: 期限切れ %{date}
+      soon: 期限間近 %{date}
+    filters:
+      all_tags: すべてのタグ
+      show_completed: 完了済みも表示
+      tag: タグで絞り込み
+      tag_option: "#%{name} (%{count})"
+    form:
+      cancel: キャンセル
+      delete: この todo を削除
+      submit: 保存
+      title: todo の編集
+    index:
+      title: todo
+    list:
+      empty: todo はありません
+    quick_entry:
+      label: todo を追加
+      placeholder: todo を追加（#タグ @実施日 !期限）
+      submit: 追加
+    todo:
+      confirm_delete: "「%{title}」を削除しますか？"
+      delete: 削除
+      edit_tags: タグを編集
+      reschedule_earlier: 実施日を 1 日前にする
+      reschedule_later: 実施日を 1 日後にする
+      toggle: "「%{title}」を完了にする"

@@ -1,0 +1,49 @@
+require:
+  - ./lib/haml_lint/linters.rb
+
+exclude:
+  - 'vendor/**/*'
+  - 'node_modules/**/*'
+
+linters:
+  # img には alt を付ける
+  AltText:
+    enabled: true
+  # 1 行の文字数
+  LineLength:
+    max: 200
+  # 連続したコメントを許可する
+  ConsecutiveComments:
+    enabled: false
+  # 文字列だけの出力を許可する（= t('.title') など）
+  UnnecessaryStringOutput:
+    enabled: false
+  # パーシャルではインスタンス変数を使わず locals で受け取る（VIEW-04）
+  InstanceVariables:
+    enabled: true
+    file_types: partials
+  # パーシャルの先頭に -# locals: (...) を書く（VIEW-05）
+  StrictLocals:
+    enabled: true
+    file_types: partials
+  # InlineStyles は CSS カスタムプロパティも禁止するので、代わりに NoInlineStyle を使う（VIEW-06）
+  InlineStyles:
+    enabled: false
+  NoInlineStyle:
+    enabled: true
+  # インラインの JavaScript を禁止する（VIEW-07）
+  NoInlineScript:
+    enabled: true
+  # タグと内容は改行する（VIEW-08）
+  TagContentOnNewLine:
+    enabled: true
+  RuboCop:
+    ignored_cops:
+      # 複数行の属性の位置をそろえられないため
+      - Layout/ExtraSpacing
+      # haml の case / if で end の位置の判定が正しくないため
+      - Layout/EndAlignment
+      # haml の変数を使っていても未使用と判定されるため
+      - Lint/UselessAssignment
+      # 修飾子の if にすると haml では読みにくくなるため
+      - Style/IfUnlessModifier

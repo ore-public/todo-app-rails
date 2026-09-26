@@ -1,0 +1,6 @@
+-# locals: (model:)
+- if model.errors.any?
+  %ul.el_errorMessages{ role: 'alert' }
+    - model.errors.full_messages.each do |message|
+      %li
+        = message

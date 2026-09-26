@@ -1,0 +1,3 @@
+-# locals: (filter:)
+= turbo_stream.replace 'todo-list', partial: 'todos/list', locals: { filter:, today: Date.current }
+= turbo_stream.replace 'todo-filters', partial: 'todos/filters', locals: { filter: }

@@ -1,0 +1,9 @@
+-# locals: (filter:)
+.bl_quickEntry
+  = form_with scope: :quick_entry, url: todos_path(filter.to_params), class: 'bl_quickEntry_form', data: { controller: 'form-reset', action: 'turbo:submit-end->form-reset#resetOnSuccess' } do |form|
+    = form.text_field :text, class: 'form-control', placeholder: t('.placeholder'), autocomplete: 'off', enterkeyhint: 'done',
+                             aria: { label: t('.label') },
+                             data: { controller: 'hotkey', action: 'keydown.o@window->hotkey#focus keydown.esc->hotkey#blur' }
+    = form.submit t('.submit'), class: 'btn btn-primary'
+  #quick-entry-errors
+    = render 'todos/quick_entry_errors', errors: []

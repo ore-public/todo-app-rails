@@ -1,0 +1,11 @@
+- content_for :title, t('.title')
+- shortcuts = { 'j' => 'next', 'down' => 'next', 'k' => 'previous', 'up' => 'previous', 'g' => 'first', 'shift+g' => 'last',
+                'x' => 'toggle', 'e' => 'edit', 'enter' => 'edit', 't' => 'editTags', 'd' => 'delete',
+                'ctrl+j' => 'rescheduleLater', 'ctrl+k' => 'rescheduleEarlier' }
+.ly_todoPage{ data: { controller: 'cursor day-change', day_change_interval_value: 60_000,
+                      action: shortcuts.map { |key, method| "keydown.#{key}@window->cursor##{method}" }.join(' ') } }
+  .ly_todoPage_toolbar
+    = render 'todos/quick_entry', filter: todo_filter
+    = render 'todos/filters', filter: todo_filter
+  = render 'todos/list', filter: todo_filter, today: Date.current
+  = render 'todos/dialogs'

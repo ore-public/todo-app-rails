@@ -1,0 +1,26 @@
+@use "../lib" as *;
+
+.ly_header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  max-width: 48rem;
+  padding: 0.75rem 1rem;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--bs-border-color);
+}
+
+.ly_header_logo {
+  margin-right: auto;
+  font-weight: 700;
+  color: var(--bs-body-color);
+  text-decoration: none;
+}
+
+.ly_header_email {
+  color: var(--bs-secondary-color);
+
+  @include media-breakpoint-down(sm) {
+    display: none;
+  }
+}

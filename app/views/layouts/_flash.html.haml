@@ -1,0 +1,4 @@
+-# locals: (messages:)
+- messages.slice('alert', 'notice').each do |type, message|
+  .el_flash{ class: "el_flash__#{type}", role: type == 'alert' ? 'alert' : 'status' }
+    = message

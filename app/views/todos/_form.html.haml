@@ -1,0 +1,22 @@
+-# locals: (todo:, filter:, autofocus:, today:)
+%h2.bl_modal_title
+  = t('.title')
+= form_with model: todo, url: todo_path(todo, filter.to_params), class: 'bl_todoForm' do |form|
+  = render 'shared/error_messages', model: todo
+  .bl_todoForm_field
+    = form.label :title, class: 'form-label'
+    = form.text_field :title, required: true, autofocus: autofocus == :title, class: 'form-control'
+  .bl_todoForm_field
+    = form.label :tag_list, class: 'form-label'
+    = form.text_field :tag_list, autofocus: autofocus == :tag_list, class: 'form-control'
+  - %i[scheduled_on due_on].each do |field|
+    = render 'todos/date_field', form:, field:, today:
+  .bl_todoForm_field
+    = form.label :note, class: 'form-label'
+    = form.text_area :note, rows: 4, class: 'form-control'
+  .bl_modal_actions
+    %button.btn.btn-secondary{ type: 'button', data: { action: 'dialog#close' } }
+      = t('.cancel')
+    = form.submit t('.submit'), class: 'btn btn-primary'
+= button_to t('.delete'), todo_path(todo, filter.to_params), method: :delete, class: 'btn btn-link text-danger',
+                                                             form: { data: { turbo_confirm: t('todos.todo.confirm_delete', title: todo.title_in_database) } }

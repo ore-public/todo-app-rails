@@ -1,0 +1,12 @@
+- content_for :title, t('.title')
+.ly_narrow
+  %h1.el_pageTitle
+    = t('.title')
+  = form_with url: password_path(params[:token]), method: :put, class: 'bl_authForm' do |form|
+    .bl_authForm_field
+      = form.label :password, t('.password'), class: 'form-label'
+      = form.password_field :password, required: true, autocomplete: 'new-password', maxlength: 72, class: 'form-control'
+    .bl_authForm_field
+      = form.label :password_confirmation, t('.password_confirmation'), class: 'form-label'
+      = form.password_field :password_confirmation, required: true, autocomplete: 'new-password', maxlength: 72, class: 'form-control'
+    = form.submit t('.submit'), class: 'btn btn-primary'

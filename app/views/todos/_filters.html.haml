@@ -1,0 +1,9 @@
+-# locals: (filter:)
+= form_with url: todos_path, method: :get, id: 'todo-filters', class: 'bl_todoFilters', data: { controller: 'auto-submit', turbo_action: 'replace' } do |form|
+  = form.select :tag, tag_filter_options(filter.tags, filter.open_todo_counts_by_tag_id), { selected: filter.tag },
+                class: 'form-select bl_todoFilters_tag', aria: { label: t('.tag') },
+                data: { controller: 'hotkey', action: 'auto-submit#submit keydown.slash@window->hotkey#focus keydown.esc->hotkey#blur' }
+  .form-check.bl_todoFilters_completed
+    = form.check_box :show_completed, { checked: filter.show_completed, class: 'form-check-input',
+                                        data: { controller: 'hotkey', action: 'auto-submit#submit keydown.c@window->hotkey#click' } }, 'true', nil
+    = form.label :show_completed, t('.show_completed'), class: 'form-check-label'

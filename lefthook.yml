@@ -1,0 +1,16 @@
+# コミットの前に、ステージした変更だけを検査する
+pre-commit:
+  parallel: true
+  commands:
+    rubocop:
+      glob: "*.{rb,rake,ru}"
+      run: bundle exec rubocop --force-exclusion {staged_files}
+    haml-lint:
+      glob: "*.haml"
+      run: bundle exec haml-lint {staged_files}
+    eslint:
+      glob: "*.js"
+      run: bunx eslint {staged_files}
+    stylelint:
+      glob: "*.scss"
+      run: bunx stylelint {staged_files}

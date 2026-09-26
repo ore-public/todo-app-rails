@@ -1,0 +1,12 @@
+.el_dueBadge {
+  color: var(--bs-secondary-color);
+}
+
+.el_dueBadge__overdue {
+  font-weight: 700;
+  color: var(--bs-danger-text-emphasis);
+}
+
+.el_dueBadge__soon {
+  color: var(--bs-warning-text-emphasis);
+}

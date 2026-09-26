@@ -1,0 +1,8 @@
+// Bootstrap 5.3 の Sass はモジュールに対応していないため、変数と mixin を読み込むこのファイルだけ @import を使う
+/* stylelint-disable at-rule-disallowed-list -- Bootstrap 5.3 は @use で読み込めないため */
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+/* stylelint-enable at-rule-disallowed-list */

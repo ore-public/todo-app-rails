@@ -1,0 +1,24 @@
+base_locale: ja
+locales: [ja]
+
+data:
+  read:
+    - config/locales/%{locale}.yml
+
+search:
+  paths:
+    - app/controllers/
+    - app/helpers/
+    - app/mailers/
+    - app/models/
+    - app/views/
+
+# 名前で直接参照しないキー
+ignore_unused:
+  - 'activemodel.*'
+  - 'activerecord.*'
+  - 'date.formats.*'
+  - 'passwords_mailer.*.subject'
+  # 期限の状態や日付の差からキーを組み立てて参照する
+  - 'todo_group.relative_days.*'
+  - 'todos.due_badge.*'

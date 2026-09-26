@@ -1,0 +1,27 @@
+@use "../lib" as *;
+
+.bl_modal {
+  z-index: $zIndexDialog;
+  width: min(32rem, calc(100vw - 2rem));
+  padding: 1.25rem;
+  color: var(--bs-body-color);
+  background-color: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius-lg);
+
+  &::backdrop {
+    background-color: rgb(0 0 0 / 40%);
+  }
+}
+
+.bl_modal_title {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.bl_modal_actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}

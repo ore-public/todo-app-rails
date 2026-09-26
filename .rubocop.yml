@@ -1,0 +1,295 @@
+plugins:
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-rspec_rails
+  - rubocop-capybara
+  - rubocop-factory_bot
+
+require:
+  - ./lib/rubocop/cop/custom.rb
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 4.0
+  Exclude:
+    - 'bin/**/*'
+    - 'db/schema.rb'
+    - 'db/*_schema.rb'
+    - 'node_modules/**/*'
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+
+# 独自 cop と haml-lint の linter は Rails の外で動くので、ActiveSupport を前提とする Rails の cop は適用しない
+Rails:
+  Exclude:
+    - 'lib/rubocop/**/*'
+    - 'lib/haml_lint/**/*'
+
+# 1 行の文字数
+Layout/LineLength:
+  Max: 200
+# メソッドチェーンの . は行頭・行末のどちらでもよい
+Layout/DotPosition:
+  Enabled: false
+# 複数行のメソッド呼び出しのインデントは指定しない
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
+# クラス内の定義順（MODEL-01）
+Layout/ClassStructure:
+  Enabled: true
+  Categories:
+    module_inclusion:
+      - include
+      - prepend
+      - extend
+    attribute_macros:
+      - attribute
+      - enum
+      - has_secure_password
+      - has_secure_token
+      - generates_token_for
+      - normalizes
+      - store_accessor
+    validations:
+      - validates
+      - validate
+      - validates_with
+      - validates_each
+    associations:
+      - belongs_to
+      - has_one
+      - has_many
+      - has_and_belongs_to_many
+      - delegate
+    callbacks:
+      - before_validation
+      - after_validation
+      - before_save
+      - around_save
+      - after_save
+      - before_create
+      - around_create
+      - after_create
+      - before_update
+      - around_update
+      - after_update
+      - before_destroy
+      - around_destroy
+      - after_destroy
+      - after_commit
+      - after_create_commit
+      - after_update_commit
+      - after_destroy_commit
+      - after_save_commit
+      - after_initialize
+    scopes:
+      - scope
+  ExpectedOrder:
+    - module_inclusion
+    - constants
+    - attribute_macros
+    - validations
+    - associations
+    - callbacks
+    - scopes
+    - public_class_methods
+    - initializer
+    - public_methods
+    - protected_methods
+    - private_class_methods
+    - private_methods
+
+# 日本語コメントを許可する
+Style/AsciiComments:
+  Enabled: false
+# クラスのドキュメントコメントを必須にしない
+Style/Documentation:
+  Enabled: false
+# frozen_string_literal のマジックコメントを必須にしない
+Style/FrozenStringLiteralComment:
+  Enabled: false
+# .zero? などへの書き換えを求めない
+Style/NumericPredicate:
+  Enabled: false
+# return を書いてもよい
+Style/RedundantReturn:
+  Enabled: false
+# %w と [] のどちらでもよい
+Style/WordArray:
+  Enabled: false
+# private は private def で書く（COMMON-05）
+Style/AccessModifierDeclarations:
+  EnforcedStyle: inline
+# クラスメソッドは def self. で書く（MODEL-02）
+Style/ClassMethodsDefinitions:
+  Enabled: true
+  EnforcedStyle: def_self
+# lambda は -> で書く
+Style/Lambda:
+  EnforcedStyle: literal
+# 6 桁以上の数値は _ で区切る
+Style/NumericLiterals:
+  MinDigits: 6
+# class と module はネストせず :: でつなぐ
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+  Exclude:
+    # 親の module がまだ定義されていないため
+    - 'config/application.rb'
+# rescue で StandardError を明示しない
+Style/RescueStandardError:
+  EnforcedStyle: implicit
+# ハッシュの値を省略できる場合は省略する
+Style/HashSyntax:
+  EnforcedShorthandSyntax: always
+# 文字列の結合は式展開で書く（COMMON-06）
+Style/StringConcatenation:
+  Enabled: true
+# send は使わない（COMMON-09）
+Style/Send:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+# ENV は fetch で読む
+Style/FetchEnvVar:
+  Enabled: true
+
+# 変数名の末尾の数字を許可する
+Naming/VariableNumber:
+  Enabled: false
+# 真偽値を返すメソッドでも ? を付けない例外
+Naming/PredicateMethod:
+  AllowedMethods: [save, save!, update, update!, perform]
+
+# spec はブロックが長くなるので除外する
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'config/routes.rb'
+    - 'config/environments/*'
+
+# 文言は I18n で管理する（VIEW-03）
+Rails/I18nLocaleTexts:
+  Enabled: true
+# 7 アクションの並び順は指定しない
+Rails/ActionOrder:
+  Enabled: false
+# 戻り値を使わない save / update は ! 付きにする（CONTROLLER-06）
+Rails/SaveBang:
+  Enabled: true
+  AllowImplicitReturn: false
+# has_many / has_one には dependent を付ける（MODEL-06）
+Rails/HasManyOrHasOneDependent:
+  Enabled: true
+# has_secure_password が定義するメソッドは動的な find_by ではない
+Rails/DynamicFindBy:
+  AllowedMethods:
+    - find_by_password_reset_token!
+# 環境名
+Rails/UnknownEnv:
+  Environments:
+    - production
+    - development
+    - test
+
+# 検証対象は described_class でなくクラス名で書いてよい
+RSpec/DescribedClass:
+  Enabled: false
+# context の文言の書き出しを指定しない
+RSpec/ContextWording:
+  Enabled: false
+# be_xxx マッチャへの書き換えを求めない
+RSpec/PredicateMatcher:
+  Enabled: false
+# subject を let より後に書いてよい
+RSpec/LeadingSubject:
+  Enabled: false
+# subject に名前を付けなくてよい
+RSpec/NamedSubject:
+  Enabled: false
+# 1 つの it に複数の expect を書いてよい（SPEC-06）
+RSpec/MultipleExpectations:
+  Enabled: false
+# let! は Custom/NoLetBang で禁止しているので、LetSetup は使わない
+RSpec/LetSetup:
+  Enabled: false
+# example の長さ
+RSpec/ExampleLength:
+  Max: 20
+# describe と context のネストの深さ
+RSpec/NestedGroups:
+  Max: 5
+# system spec のファイル名はクラス名に対応しない
+RSpec/SpecFilePathFormat:
+  Exclude:
+    - 'spec/lib/**/*'
+RSpec/DescribeClass:
+  Exclude:
+    - 'spec/system/**/*'
+    - 'spec/requests/**/*'
+    - 'spec/db/**/*'
+    - 'spec/docs/**/*'
+
+# --- 独自 cop ---
+Custom/RequireInverseOf:
+  Enabled: true
+  Include:
+    - 'app/models/**/*.rb'
+Custom/NoAttrAccessorInModel:
+  Enabled: true
+  Include:
+    - 'app/models/**/*.rb'
+Custom/NoCounterCache:
+  Enabled: true
+  Include:
+    - 'app/models/**/*.rb'
+Custom/HasOneValidate:
+  Enabled: true
+  Include:
+    - 'app/models/**/*.rb'
+Custom/PreloadWithReason:
+  Enabled: true
+  Include:
+    - 'app/**/*.rb'
+Custom/StandardActionsOnly:
+  Enabled: true
+  Include:
+    - 'app/controllers/**/*.rb'
+  Exclude:
+    - 'app/controllers/concerns/**/*.rb'
+Custom/ScopedFind:
+  Enabled: true
+  Include:
+    - 'app/controllers/**/*.rb'
+  Exclude:
+    - 'app/controllers/concerns/authentication.rb'
+    - 'app/controllers/passwords_controller.rb'
+    - 'app/controllers/sessions_controller.rb'
+Custom/RoutesStandardOnly:
+  Enabled: true
+  Include:
+    - 'config/routes.rb'
+  AllowedPaths:
+    - up
+Custom/NoStrftime:
+  Enabled: true
+  Include:
+    - 'app/**/*.rb'
+    - 'app/**/*.haml'
+Custom/NoCodeInMigration:
+  Enabled: true
+  Include:
+    - 'db/migrate/**/*.rb'
+Custom/NoBooleanColumn:
+  Enabled: true
+  Include:
+    - 'db/migrate/**/*.rb'
+Custom/NoLetBang:
+  Enabled: true
+  Include:
+    - 'spec/**/*_spec.rb'
+Custom/ActiveJobMockInSpec:
+  Enabled: true
+  Include:
+    - 'spec/**/*_spec.rb'

@@ -1,0 +1,12 @@
+-# locals: (filter:, today:)
+.bl_todoList#todo-list
+  - groups = filter.groups
+  - if groups.empty?
+    %p.bl_todoList_empty
+      = t('.empty')
+  - groups.each do |group|
+    %section.bl_todoGroup{ aria: { label: group.label(today:) } }
+      %h2.bl_todoGroup_label{ data: { past: group.past?(today:) } }
+        = group.label(today:)
+      %ul.bl_todoGroup_items
+        = render partial: 'todos/todo', collection: group.todos, locals: { filter:, today: }

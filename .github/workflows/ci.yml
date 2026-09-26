@@ -1,0 +1,148 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install node modules
+        run: bun install --frozen-lockfile
+
+      - name: Prepare RuboCop cache
+        uses: actions/cache@v4
+        env:
+          DEPENDENCIES_HASH: ${{ hashFiles('.ruby-version', '**/.rubocop.yml', '**/.rubocop_todo.yml', 'lib/rubocop/**/*.rb', 'Gemfile.lock') }}
+        with:
+          path: ${{ env.RUBOCOP_CACHE_ROOT }}
+          key: rubocop-${{ runner.os }}-${{ env.DEPENDENCIES_HASH }}-${{ github.ref_name == github.event.repository.default_branch && github.run_id || 'default' }}
+          restore-keys: |
+            rubocop-${{ runner.os }}-${{ env.DEPENDENCIES_HASH }}-
+
+      - name: Lint Ruby
+        run: bin/rubocop -f github
+
+      - name: Lint Haml
+        run: bundle exec haml-lint
+
+      - name: Lint JavaScript
+        run: bun run eslint
+
+      - name: Lint stylesheets
+        run: bun run stylelint
+
+      - name: Check locale files
+        run: bundle exec i18n-tasks health
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install node modules
+        run: bun install --frozen-lockfile
+
+      - name: Scan for common Rails security vulnerabilities using static analysis
+        run: bin/brakeman --no-pager --exit-on-warn --exit-on-error
+
+      - name: Scan for known security vulnerabilities in gems used
+        run: bin/bundler-audit
+
+      - name: Scan for known security vulnerabilities in node modules used
+        run: bun audit
+
+  db:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Check that db/schema.rb matches the migrations
+        run: |
+          bin/rails db:migrate
+          git diff --exit-code db/schema.rb
+
+      - name: Check consistency between models and the database schema
+        run: bundle exec database_consistency
+
+      - name: Check autoloading
+        run: bin/rails zeitwerk:check
+
+  test:
+    runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
+    steps:
+      - name: Install packages
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libvips
+
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install node modules
+        run: bun install --frozen-lockfile
+
+      - name: Install Chrome for system specs
+        run: bunx playwright install --with-deps chrome
+
+      - name: Build assets
+        run: |
+          bun run build
+          bin/rails dartsass:build
+
+      - name: Run specs with coverage
+        run: |
+          bin/rails db:test:prepare
+          COVERAGE=true bin/rspec
+
+      - name: Keep screenshots from failed system specs
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: screenshots
+          path: ${{ github.workspace }}/tmp/capybara
+          if-no-files-found: ignore
+
+      - name: Keep coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: ${{ github.workspace }}/coverage
+          if-no-files-found: ignore

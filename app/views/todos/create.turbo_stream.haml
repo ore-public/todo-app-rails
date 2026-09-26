@@ -1,0 +1,3 @@
+= turbo_stream.update 'quick-entry-errors', partial: 'todos/quick_entry_errors', locals: { errors: @quick_entry.errors.full_messages }
+- if @quick_entry.errors.empty?
+  = render 'todos/refresh', filter: todo_filter

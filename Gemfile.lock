@@ -114,7 +114,7 @@ GEM
     dartsass-rails (0.5.1)
       railties (>= 6.0.0)
       sass-embedded (~> 1.63)
-    database_consistency (3.0.13)
+    database_consistency (3.0.14)
       activerecord (>= 3.2)
     date (3.5.1)
     debug (1.11.1)
@@ -587,7 +587,7 @@ CHECKSUMS
   connection_pool (3.0.2) sha256=33fff5ba71a12d2aa26cb72b1db8bba2a1a01823559fb01d29eb74c286e62e0a
   crass (1.0.7) sha256=94868719948664c89ddcaf0a37c65048413dfcb1c869470a5f7a7ceb5390b295
   dartsass-rails (0.5.1) sha256=f19510fb1b29c76c1739a06954d615f1d20ad653b6fc668dd7c68542bb303a1a
-  database_consistency (3.0.13) sha256=4f5763aed3ed3d60ab58f47648942048e27c59ab8d1535f4885b582f52b7e494
+  database_consistency (3.0.14) sha256=61f13d41300c1ad5f2fa968fa0550b5f6fcad5c0a2e0a0ef6fa8c8f4905b2578
   date (3.5.1) sha256=750d06384d7b9c15d562c76291407d89e368dda4d4fff957eb94962d325a0dc0
   debug (1.11.1) sha256=2e0b0ac6119f2207a6f8ac7d4a73ca8eb4e440f64da0a3136c30343146e952b6
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
